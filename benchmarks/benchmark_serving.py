@@ -187,6 +187,17 @@ def main(args: argparse.Namespace):
     benchmark_time = benchmark_end_time - benchmark_start_time
     print(f"Total time: {benchmark_time:.2f} s")
     print(f"Throughput: {args.num_prompts / benchmark_time:.2f} requests/s")
+    # token/sec throughputs
+    all_tokens = np.sum([
+        output_len + prompt_len
+        for prompt_len, output_len, _ in REQUEST_LATENCY
+    ])
+    gen_tokens = np.sum([
+        output_len
+        for _, output_len, _ in REQUEST_LATENCY
+    ])
+    print(f"Throughput all-token: {all_tokens / benchmark_time:.2f} tokens/s")
+    print(f"Throughput gen-token: {gen_tokens / benchmark_time:.2f} tokens/s")
 
     # Compute the latency statistics.
     avg_latency = np.mean([latency for _, _, latency in REQUEST_LATENCY])
